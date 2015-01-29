@@ -47,6 +47,15 @@ dependencies {
     // compile 'log4j:log4j:1.2.17'
 	compile 'org.jruby:jruby-complete:1.7.18'
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+} 
+
+test {
+  // set heap size for the test JVM(s)
+//  minHeapSize = "1024m"
+//  maxHeapSize = "1024m"
+
+  // set JVM arguments for the test JVM(s)
+  jvmArgs '-XX:MaxPermSize=512m -Xcompile.invokedynamic=true'
 }
 
 publishing {

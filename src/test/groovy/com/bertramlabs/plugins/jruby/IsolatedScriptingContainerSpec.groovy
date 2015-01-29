@@ -17,6 +17,7 @@
 package com.bertramlabs.plugins.jruby;
 
 import spock.lang.Specification
+import org.jruby.RubyInstanceConfig.CompileMode
 /**
  * @author David Estes
  */
@@ -25,6 +26,7 @@ class IsolatedScriptingContainerSpec extends Specification {
     void "should install a gem file successfully"() {
     	given:
     		def scriptingContainer = new IsolatedScriptingContainer('test');
+            //scriptingContainer.setCompileMode(CompileMode.OFF)
     		def gemList = [compass: '1.0.1']
     	when:
     		def result = scriptingContainer.installGemDependencies(gemList);

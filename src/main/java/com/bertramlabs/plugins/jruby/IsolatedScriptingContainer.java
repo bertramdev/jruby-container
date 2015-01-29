@@ -76,22 +76,25 @@ class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 		ArrayList<String> argList = new ArrayList<String>();
 		for(String gemName : gemSet) {
 			String gemVersion = gemList.get(gemName);
-			if(gemVersion != null && gemVersion.length() > 0) {
-				argList.add(gemName + ":" + gemVersion);
-			} else {
-				argList.add(gemName);
+			if(!isGemInstalled(gemName,gemVersion)) {
+				if(gemVersion != null && gemVersion.length() > 0) {
+					argList.add(gemName + ":" + gemVersion);
+				} else {
+					argList.add(gemName);
+				}
 			}
 		}
-
+		if(argList.size() == 0) {
+			return true;
+		}
 		argList.add(0,"install");
 		argList.add("--no-ri");
 		argList.add("--no-rdoc");
-		IsolatedScriptingContainer gemInstall = new IsolatedScriptingContainer(name);
+//		IsolatedScriptingContainer gemInstall = new IsolatedScriptingContainer(name);
+		gemInstall.setCompileMode(org.jruby.RubyInstanceConfig.CompileMode.OFF);
 		gemInstall.put("ARGV", argList.toArray(new String[argList.size()]));
-		// gemInstall.setArgv(argList.toArray(new String[argList.size()]));
 		gemInstall.initializeEnvironment(containerPath);
 		gemInstall.runScriptlet(PathType.CLASSPATH, "META-INF/jruby.home/bin/jgem");
-		// TODO: We should change this to build one big argv list for installing all the gems in the gem list at once
 		
 		return true;
 	}
@@ -107,5 +110,26 @@ class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 		
 		return this.runScriptlet(PathType.ABSOLUTE, binExec);
 		
+	}
+
+	public Boolean isGemInstalled(String gemName, String version) throws IOException {
+		File specifications = new File(gemDir.getCanonicalPath(),"specifications");
+		if(!specifications.exists()) {
+			return false;
+		}
+
+		for(File spec : specifications.listFiles()) {
+			String name = spec.getName();
+			String nameWithoutExtension = name.replace(".gemspec","");
+			int splitPosition = nameWithoutExtension.lastIndexOf('-');
+			String specGemName = nameWithoutExtension.substring(0,splitPosition);
+			String specVersion = nameWithoutExtension.substring(splitPosition+1);
+			if(gemName.equals(specGemName)) {
+				if(version == null || version.length() == 0 || version.equals(specVersion)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
