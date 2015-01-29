@@ -51,11 +51,11 @@ dependencies {
 
 test {
   // set heap size for the test JVM(s)
-//  minHeapSize = "1024m"
-//  maxHeapSize = "1024m"
+     // minHeapSize = "1024m"
+     // maxHeapSize = "1024m"
 
   // set JVM arguments for the test JVM(s)
-  jvmArgs '-XX:MaxPermSize=512m -Xcompile.invokedynamic=true'
+  // jvmArgs ' -Xcompile.invokedynamic=true'
 }
 
 publishing {
