@@ -1,0 +1,111 @@
+/*
+ * Copyright 2014 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.bertramlabs.plugins.jruby;
+import org.jruby.embed.ScriptingContainer;
+import org.jruby.embed.PathType;
+import java.util.HashMap;
+import java.util.Set;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.ArrayList;
+
+class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
+	private String name;
+	private String containerPath;
+	private File gemDir;
+
+	public IsolatedScriptingContainer(String name)  throws IOException  {
+		super();
+		this.name = name;
+		this.initializeEnvironment();
+		//TODO: Set environment to point to custom GEM_HOME and JRUBY_HOME
+	}
+
+	public void initializeEnvironment() throws IOException {
+		initializeEnvironment(JrubyContainerConfig.getContainerPath());
+	}
+
+	public String getContainerPath() {
+		return this.containerPath;
+	}
+
+	public void initializeEnvironment(String containerPath) throws IOException {
+		this.containerPath = containerPath;
+		File containerDir = new File(containerPath, this.name);
+		if(!containerDir.exists()) {
+			containerDir.mkdirs();
+		}
+
+		gemDir = new File(containerDir.getCanonicalPath(), "gems");
+		if(!gemDir.exists()) {
+			gemDir.mkdirs();
+		}
+
+		HashMap<String,String> environmentMap = new HashMap();
+
+		environmentMap.put("GEM_HOME", gemDir.getCanonicalPath());
+
+		//TODO: Do we need to actually do this or keep it at META-INF/jruby.home
+		// this.setHomeDirectory(containerDir.getCanonicalPath());
+
+		this.setEnvironment(environmentMap);
+	}
+
+	/**
+	* Installs gems from rubygems into the containerPath.
+	* gemList Map of gems to install with the key being the gem name and the value being the version (leave blank if you dont want to scope to a specific version)
+	*/
+	public Boolean installGemDependencies(Map<String,String> gemList) throws IOException  {
+		Set<String> gemSet = gemList.keySet();
+
+		ArrayList<String> argList = new ArrayList<String>();
+		for(String gemName : gemSet) {
+			String gemVersion = gemList.get(gemName);
+			if(gemVersion != null && gemVersion.length() > 0) {
+				argList.add(gemName + ":" + gemVersion);
+			} else {
+				argList.add(gemName);
+			}
+		}
+
+		argList.add(0,"install");
+		argList.add("--no-ri");
+		argList.add("--no-rdoc");
+		IsolatedScriptingContainer gemInstall = new IsolatedScriptingContainer(name);
+		gemInstall.put("ARGV", argList.toArray(new String[argList.size()]));
+		// gemInstall.setArgv(argList.toArray(new String[argList.size()]));
+		gemInstall.initializeEnvironment(containerPath);
+		gemInstall.runScriptlet(PathType.CLASSPATH, "META-INF/jruby.home/bin/jgem");
+		// TODO: We should change this to build one big argv list for installing all the gems in the gem list at once
+		
+		return true;
+	}
+
+	/**
+	* Executes a bin script in the GEM_HOME from this container
+	*/
+	public Object runBinScript(String path, String[] argv) throws IOException {
+
+		String binPath = new File(gemDir.getCanonicalPath(),"bin").getCanonicalPath();
+		String binExec = new File(binPath,path).getCanonicalPath();
+		this.put("ARGV", argv);
+		
+		return this.runScriptlet(PathType.ABSOLUTE, binExec);
+		
+	}
+}
