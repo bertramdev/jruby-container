@@ -29,5 +29,4 @@ scriptingContainer.initializeEnvironment("/.my-container-path")
 
 ## Work To Be Done
 
-* Make sure we only try to install gems to the container that are not already installed
 * Add Convenience methods to clean the container directory for a clean slate scenario

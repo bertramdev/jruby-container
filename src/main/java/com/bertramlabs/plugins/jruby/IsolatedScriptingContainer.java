@@ -24,11 +24,22 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.ArrayList;
 
-class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
+/**
+* An extension of JRuby's ScriptingContainer that allows the container to run in an isolated gem directory.
+* Essentially, provides gemset capabilities to the Jruby runtime in a folder `.jruby-container`
+*
+* @author David Estes
+*/
+
+public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 	private String name;
 	private String containerPath;
 	private File gemDir;
 
+	/**
+	* Constructs an IsolatedScriptingContainer for use.
+	* @param name The name of the container. Used to isolate gems in a gemset
+	*/
 	public IsolatedScriptingContainer(String name)  throws IOException  {
 		super();
 		this.name = name;
@@ -36,6 +47,9 @@ class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 		//TODO: Set environment to point to custom GEM_HOME and JRUBY_HOME
 	}
 
+	/**
+	* Initializes the environment variables pointing to the container path given by the global config
+	*/
 	public void initializeEnvironment() throws IOException {
 		initializeEnvironment(JrubyContainerConfig.getContainerPath());
 	}
@@ -44,6 +58,11 @@ class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 		return this.containerPath;
 	}
 
+	/**
+	* Initializes the environment allowing a custom container path to be specified
+	* @param containerPath The path to the folder in which the gemsets should be stored. If the directory does not exist, it will be created.
+	*
+	*/
 	public void initializeEnvironment(String containerPath) throws IOException {
 		this.containerPath = containerPath;
 		File containerDir = new File(containerPath, this.name);
@@ -68,7 +87,7 @@ class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 
 	/**
 	* Installs gems from rubygems into the containerPath.
-	* gemList Map of gems to install with the key being the gem name and the value being the version (leave blank if you dont want to scope to a specific version)
+	* @param gemList Map of gems to install with the key being the gem name and the value being the version (leave blank if you dont want to scope to a specific version)
 	*/
 	public Boolean installGemDependencies(Map<String,String> gemList) throws IOException  {
 		Set<String> gemSet = gemList.keySet();
@@ -101,6 +120,8 @@ class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 
 	/**
 	* Executes a bin script in the GEM_HOME from this container
+	* @param path - Binary name of script to be executed
+	* @param argv - Arguments that you wish to pass to this runtime script.
 	*/
 	public Object runBinScript(String path, String[] argv) throws IOException {
 
@@ -112,6 +133,12 @@ class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContainer {
 		
 	}
 
+
+	/**
+	* Detects if a gem is installed in the current container or not.
+	* @param gemName - The Name of the gem we are looking for
+	* @param version - The specific version, if left blank we ignore.
+	*/
 	public Boolean isGemInstalled(String gemName, String version) throws IOException {
 		File specifications = new File(gemDir.getCanonicalPath(),"specifications");
 		if(!specifications.exists()) {
