@@ -17,6 +17,8 @@
 package com.bertramlabs.plugins.jruby;
 import org.jruby.embed.ScriptingContainer;
 import org.jruby.embed.PathType;
+import org.jruby.embed.LocalContextScope;
+import org.jruby.embed.LocalVariableBehavior;
 import java.util.HashMap;
 import java.util.Set;
 import java.io.File;
@@ -44,8 +46,42 @@ public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContain
 		super();
 		this.name = name;
 		this.initializeEnvironment();
-		//TODO: Set environment to point to custom GEM_HOME and JRUBY_HOME
 	}
+
+	/**
+	* Constructs an IsolatedScriptingContainer for use.
+	* @param name The name of the container. Used to isolate gems in a gemset
+	* @param behavior
+	*/
+	public IsolatedScriptingContainer(String name, LocalVariableBehavior behavior)  throws IOException  {
+		super(behavior);
+		this.name = name;
+		this.initializeEnvironment();
+	}
+
+	/**
+	* Constructs an IsolatedScriptingContainer for use.
+	* @param name The name of the container. Used to isolate gems in a gemset
+	* @param scope
+	*/
+	public IsolatedScriptingContainer(String name, LocalContextScope scope)  throws IOException  {
+		super(scope);
+		this.name = name;
+		this.initializeEnvironment();
+	}
+
+	/**
+	* Constructs an IsolatedScriptingContainer for use.
+	* @param name The name of the container. Used to isolate gems in a gemset
+	* @param scope
+	* @param behavior
+	*/
+	public IsolatedScriptingContainer(String name, LocalContextScope scope, LocalVariableBehavior behavior)  throws IOException  {
+		super(scope,behavior);
+		this.name = name;
+		this.initializeEnvironment();
+	}
+
 
 	/**
 	* Initializes the environment variables pointing to the container path given by the global config
