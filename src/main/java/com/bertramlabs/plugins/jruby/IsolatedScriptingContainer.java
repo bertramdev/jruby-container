@@ -100,6 +100,13 @@ public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContain
 	*
 	*/
 	public void initializeEnvironment(String containerPath) throws IOException {
+		if(containerPath == null) {
+			HashMap<String,String> environmentMap = new HashMap();
+			environmentMap.put("GEM_HOME", null);
+			this.setEnvironment(environmentMap);
+			return
+		}
+
 		this.containerPath = containerPath;
 		File containerDir = new File(containerPath, this.name);
 		if(!containerDir.exists()) {
