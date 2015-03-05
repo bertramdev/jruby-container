@@ -104,7 +104,7 @@ public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContain
 			HashMap<String,String> environmentMap = new HashMap();
 			environmentMap.put("GEM_HOME", null);
 			this.setEnvironment(environmentMap);
-			return
+			return;
 		}
 
 		this.containerPath = containerPath;
