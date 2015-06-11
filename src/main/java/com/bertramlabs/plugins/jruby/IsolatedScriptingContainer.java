@@ -190,7 +190,7 @@ public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContain
 
 		for(File spec : specifications.listFiles()) {
 			String name = spec.getName();
-			String nameWithoutExtension = name.replace(".gemspec","");
+			String nameWithoutExtension = name.replace("-java.gemspec","").replace(".gemspec","");
 			int splitPosition = nameWithoutExtension.lastIndexOf('-');
 			String specGemName = nameWithoutExtension.substring(0,splitPosition);
 			String specVersion = nameWithoutExtension.substring(splitPosition+1);
