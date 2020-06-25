@@ -4,7 +4,7 @@ apply plugin: 'maven'
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.bertramlabs.plugins'
-version = '0.6.1'
+version = '0.6.2'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
@@ -46,7 +46,7 @@ dependencies {
 	// compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.13"
     
     // compile 'log4j:log4j:1.2.17'
-	compile 'org.jruby:jruby-complete:1.7.18'
+	compile 'org.jruby:jruby-complete:9.2.11.1'
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
 } 
 

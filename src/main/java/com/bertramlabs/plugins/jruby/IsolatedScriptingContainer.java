@@ -150,8 +150,6 @@ public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContain
 			return true;
 		}
 		argList.add(0,"install");
-		argList.add("--no-ri");
-		argList.add("--no-rdoc");
 		IsolatedScriptingContainer gemInstall = new IsolatedScriptingContainer(name);
 	//	gemInstall.setCompileMode(org.jruby.RubyInstanceConfig.CompileMode.OFF);
 		gemInstall.put("ARGV", argList.toArray(new String[argList.size()]));
