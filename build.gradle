@@ -8,7 +8,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
 group = 'com.bertramlabs.plugins'
-version = '0.6.2'
+version = '0.6.3'
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
@@ -36,12 +36,12 @@ sourceSets {
 }
 
 dependencies {
-    testCompile 'org.codehaus.groovy:groovy-all:2.0.7'
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.19'
 	// compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.13"
         
     // compile 'log4j:log4j:1.2.17'
 	compile 'org.jruby:jruby-complete:9.2.11.1'
-    testCompile "org.spockframework:spock-core:0.7-groovy-2.0"
+    testCompile 'org.spockframework:spock-core:1.3-groovy-2.4'
 } 
 
 test {
