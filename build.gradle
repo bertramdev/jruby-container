@@ -44,7 +44,7 @@ sourceSets {
 dependencies {
     testCompile 'org.codehaus.groovy:groovy-all:2.0.7'
 	// compile "com.bertramlabs.plugins:asset-pipeline-core:2.0.13"
-    
+        
     // compile 'log4j:log4j:1.2.17'
 	compile 'org.jruby:jruby-complete:9.2.11.1'
     testCompile "org.spockframework:spock-core:0.7-groovy-2.0"

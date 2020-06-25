@@ -103,6 +103,7 @@ public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContain
 		if(containerPath == null) {
 			HashMap<String,String> environmentMap = new HashMap();
 			environmentMap.put("GEM_HOME", null);
+			environmentMap.put("CLASSPATH", "");
 			this.setEnvironment(environmentMap);
 			return;
 		}
@@ -121,6 +122,7 @@ public class IsolatedScriptingContainer extends org.jruby.embed.ScriptingContain
 		HashMap<String,String> environmentMap = new HashMap();
 
 		environmentMap.put("GEM_HOME", gemDir.getCanonicalPath());
+		environmentMap.put("CLASSPATH", "");
 
 		//TODO: Do we need to actually do this or keep it at META-INF/jruby.home
 		// this.setHomeDirectory(containerDir.getCanonicalPath());
